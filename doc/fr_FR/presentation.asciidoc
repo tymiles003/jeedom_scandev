@@ -1,0 +1,3 @@
+==== Scanner Bluetooth, détection des périphériques Bluetooth
+
+Ce plugin utilise une clef Bluetooth (BLE pour le scan BLE) pour scanner les périphériques dans les environs et remonter le RSSI Bluetooth dans Jeedom

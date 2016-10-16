@@ -1,0 +1,9 @@
+==== Configuration du plugin
+
+Il n'y a pas de configuration à faire
+
+Il est possible d'activer ou non le service de détction
+
+===== Utilisation
+
+Automatiquement les périphériques BLE seront créés sur détection. Leur statut est binaire. 1 pour une présence en cours, 0 quand ils sortent de la zone de reconnaissance

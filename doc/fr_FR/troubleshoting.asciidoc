@@ -1,0 +1,6 @@
+[panel,danger]
+.Mon périphérique n'apparait pas ?
+--
+Attention seuls les périphériques BLE sont détectés
+
+--

@@ -1,0 +1,11 @@
+[panel,primary]
+.Est-ce qu'on peut utiliser en déporté ?
+--
+Oui, le plugin sur le déporté transmettra les résultats au Jeedom central.
+--
+
+[panel,primary]
+.Est-ce que je peux utiliser tout type de clef Bluetooth ?
+--
+Non, il faut que la clef soit Bluetooth 4 BLE au minimum.
+--
