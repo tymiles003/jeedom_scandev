@@ -78,11 +78,11 @@ sudo npm install --unsafe-perm noble
 echo 80 > /tmp/scandev_dep
 sudo npm install --unsafe-perm request
 echo 85 > /tmp/scandev_dep
-npm install xml2json
+sudo npm install xml2json
 echo 90 > /tmp/scandev_dep
-npm install JSON2
+sudo npm install JSON2
 echo 95 > /tmp/scandev_dep
-npm install watch
+sudo npm install watch
 echo 99 > /tmp/scandev_dep
 
 sudo chown -R www-data *
