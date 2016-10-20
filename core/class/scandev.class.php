@@ -37,7 +37,7 @@ class scandev extends eqLogic {
       throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
     }
     log::add('scandev', 'info', 'Lancement des démons scandev');
-    $url = 'URL=http://127.0.0.1' . config::byKey('internalComplement') . '/plugins/airmon/core/api/jeeScandev.php?apikey=' . config::byKey('api');
+    $url = 'URL=http://127.0.0.1' . config::byKey('internalComplement') . '/plugins/airmon/core/api/jeeScandev.php?apikey=' . jeedom::getApiKey('scandev');
 
     if (config::byKey('portble', 'scandev',0) != '0') {
       $name = 'NAME=blemaster';
