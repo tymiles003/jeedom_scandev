@@ -10,14 +10,22 @@ if [ ! -d "$DIRECTORY" ]; then
   sudo mkdir $DIRECTORY
 fi
 sudo chown -R www-data $DIRECTORY
+DIRECTORY="/opt/jeedom_scandev"
+if [ ! -d "$DIRECTORY" ]; then
+  echo "Création du répertoire /opt/jeedom_scandev"
+  sudo mkdir $DIRECTORY
+fi
+cd ../resources/
+cp scandev* /opt/jeedom_scandev
+sudo chown -R www-data $DIRECTORY
 echo 10 > /tmp/scandev_dep
 actual=`nodejs -v`;
 echo "Version actuelle : ${actual}"
 
-sudo apt-get -y install bluetooth bluez
-echo 20 > /tmp/flowerpowerbt_dep
-sudo apt-get -y install libbluetooth-dev
-echo 30 > /tmp/flowerpowerbt_dep
+sudo apt-get -y install bluetooth bluez libbluetooth-dev
+echo 20 > /tmp/scandev_dep
+sudo apt-get -y install aircrack-ng
+echo 30 > /tmp/scandev_dep
 
 if [[ $actual == *"4."* || $actual == *"5."* ]]
 then
@@ -60,16 +68,22 @@ fi
 
 echo 70 > /tmp/scandev_dep
 
-cd ../node/
+cd /opt/jeedom_scandev
 npm cache clean
 sudo npm cache clean
 sudo rm -rf node_modules
 
-echo 80 > /tmp/scandev_dep
+echo 75 > /tmp/scandev_dep
 sudo npm install --unsafe-perm noble
-echo 85 > /tmp/scandev_dep
+echo 80 > /tmp/scandev_dep
 sudo npm install --unsafe-perm request
+echo 85 > /tmp/scandev_dep
+npm install xml2json
 echo 90 > /tmp/scandev_dep
+npm install JSON2
+echo 95 > /tmp/scandev_dep
+npm install watch
+echo 99 > /tmp/scandev_dep
 
 sudo chown -R www-data *
 

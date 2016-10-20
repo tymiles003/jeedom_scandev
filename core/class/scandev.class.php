@@ -15,19 +15,14 @@
 * You should have received a copy of the GNU General Public License
 * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
 */
-
-/* * ***************************Includes********************************* */
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 
-
 class scandev extends eqLogic {
-
-
   public static function deamon_info() {
     $return = array();
-    $return['log'] = 'scandev_node';
+    //$return['log'] = 'scandev_node';
     $return['state'] = 'nok';
-    $pid = trim( shell_exec ('ps ax | grep "scandev/node/scandev.js" | grep -v "grep" | wc -l') );
+    $pid = trim( shell_exec ('ps ax | grep "/opt/jeedom_scandev" | grep -v "grep" | wc -l') );
     if ($pid != '' && $pid != '0') {
       $return['state'] = 'ok';
     }
@@ -41,22 +36,25 @@ class scandev extends eqLogic {
     if ($deamon_info['launchable'] != 'ok') {
       throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
     }
-    log::add('scandev', 'info', 'Lancement du démon scandev');
+    log::add('scandev', 'info', 'Lancement des démons scandev');
+    $url = 'URL=http://127.0.0.1' . config::byKey('internalComplement') . '/plugins/airmon/core/api/jeeScandev.php?apikey=' . config::byKey('api');
 
-    $service_path = realpath(dirname(__FILE__) . '/../../node/');
-
-    $port = str_replace('hci', '', jeedom::getBluetoothMapping(config::byKey('port', 'scandev',0)));
-
-    if (!config::byKey('internalPort')) {
-      $url = config::byKey('internalProtocol') . '127.0.0.1' . config::byKey('internalComplement') . '/core/api/jeeApi.php?api=' . config::byKey('api');
-    } else {
-      $url = config::byKey('internalProtocol') . '127.0.0.1' . ':' . config::byKey('internalPort') . config::byKey('internalComplement') . '/core/api/jeeApi.php?api=' . config::byKey('api');
+    if (config::byKey('portble', 'scandev',0) != '0') {
+      $name = 'NAME=blemaster';
+      $port = 'NOBLE_HCI_DEVICE_ID=' . str_replace('hci', '', jeedom::getBluetoothMapping(config::byKey('portble', 'scandev',0)));
+      $cmd = $port . ' ' . $url . ' ' . $name . ' ' . 'nodejs /opt/jeedom_scandev/scandev_ble.js';
+      scandev::execute_service('ble', $cmd);
     }
-    $name = 'master';
+    if (config::byKey('portwifi', 'scandev',0) != '0') {
+      $name = 'NAME=wifimaster';
+      $port = 'WLAN=' . config::byKey('portwifi', 'scandev',0);
+      $cmd = $port . ' ' . $url . ' ' . $name . ' ' . 'nodejs /opt/jeedom_scandev/scandev_wifi.js';
+      scandev::execute_service('wifi', $cmd);
+    }
+  }
 
-    $cmd = 'nodejs ' . $service_path . '/scandev.js "' . $url . '" "' . $name . '"';
-    $cmd = 'NOBLE_HCI_DEVICE_ID=' . $port . ' ' . $cmd;
-
+  public static function execute_service($service, $cmd) {
+    log::add('scandev', 'info', 'Lancement service ' . $service);
     log::add('scandev', 'debug', $cmd);
     $result = exec('sudo ' . $cmd . ' >> ' . log::getPathToLog('scandev_node') . ' 2>&1 &');
     if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
@@ -80,21 +78,20 @@ class scandev extends eqLogic {
     message::removeAll('scandev', 'unableStartDeamon');
     log::add('scandev', 'info', 'Démon scandev lancé');
     return true;
-
   }
 
   public static function deamon_stop() {
-    exec('kill $(ps aux | grep "scandev/node/scandev.js" | awk \'{print $2}\')');
-    log::add('scandev', 'info', 'Arrêt du service scandev');
+    exec('kill $(ps aux | grep "/opt/jeedom_scandev" | awk \'{print $2}\')');
+    log::add('scandev', 'info', 'Arrêt des services scandev');
     $deamon_info = self::deamon_info();
     if ($deamon_info['state'] == 'ok') {
       sleep(1);
-      exec('kill -9 $(ps aux | grep "scandev/node/scandev.js" | awk \'{print $2}\')');
+      exec('kill -9 $(ps aux | grep "/opt/jeedom_scandev" | awk \'{print $2}\')');
     }
     $deamon_info = self::deamon_info();
     if ($deamon_info['state'] == 'ok') {
       sleep(1);
-      exec('sudo kill -9 $(ps aux | grep "scandev/node/scandev.js" | awk \'{print $2}\')');
+      exec('sudo kill -9 $(ps aux | grep "/opt/jeedom_scandev" | awk \'{print $2}\')');
     }
   }
 
@@ -102,8 +99,8 @@ class scandev extends eqLogic {
     $return = array();
     $return['log'] = 'scandev_dep';
     $return['progress_file'] = '/tmp/scandev_dep';
-    $noble = realpath(dirname(__FILE__) . '/../../node/node_modules/noble');
-    $request = realpath(dirname(__FILE__) . '/../../node/node_modules/request');
+    $noble = realpath(dirname(__FILE__) . '/opt/jeedom_scandev/node_modules/noble');
+    $request = realpath(dirname(__FILE__) . '/opt/jeedom_scandev/node_modules/request');
     $return['progress_file'] = '/tmp/scandev_dep';
     if (is_dir($noble) && is_dir($request)) {
       $return['state'] = 'ok';
@@ -118,66 +115,7 @@ class scandev extends eqLogic {
     $resource_path = realpath(dirname(__FILE__) . '/../../resources');
     passthru('/bin/bash ' . $resource_path . '/nodejs.sh ' . $resource_path . ' > ' . log::getPathToLog('scandev_dep') . ' 2>&1 &');
   }
-
-  public static function event() {
-    $reader = init('name');
-    $id = init('id');
-    $json = file_get_contents('php://input');
-    log::add('scandev', 'debug', 'Body ' . print_r($json,true));
-    $body = json_decode($json, true);
-    $rssi = $body['rssi'];
-    if (!isset($body['device'])) {
-      log::add('scandev', 'debug', 'Equipement sans nom, pas de création');
-      die;
-    }
-    $device = $body['device'];
-    $scandev = self::byLogicalId($id, 'scandev');
-    if (!is_object($scandev)) {
-      if (config::byKey('include_mode','scandev') != 1) {
-        return false;
-      }
-      $scandev = new scandev();
-      $scandev->setEqType_name('scandev');
-      $scandev->setLogicalId($id);
-      $scandev->setConfiguration('addr', $id);
-      $scandev->setName($device);
-      $scandev->setIsEnable(true);
-      event::add('scandev::includeDevice',
-      array(
-        'state' => $state
-      )
-    );
-  }
-  $scandev->setConfiguration('lastCommunication', date('Y-m-d H:i:s'));
-  if ($device != $scandev->getConfiguration('device')) {
-    $scandev->setConfiguration('device', $device);
-  }
-  $scandev->save();
-  $scandevCmd = scandevCmd::byEqLogicIdAndLogicalId($scandev->getId(),$reader);
-  if ($rssi != "off") {
-    $value = 1;
-  } else {
-    $value = 0;
-  }
-  if (!is_object($scandevCmd)) {
-    $scandevCmd = new scandevCmd();
-    $scandevCmd->setName($reader);
-    $scandevCmd->setEqLogic_id($scandev->getId());
-    $scandevCmd->setLogicalId($reader);
-    $scandevCmd->setType('info');
-    $scandevCmd->setSubType('binary');
-  }
-  $scandevCmd->setConfiguration('value', $value);
-  $scandevCmd->setConfiguration('rssi', $rssi);
-  $scandevCmd->setConfiguration('reader', $reader);
-  $scandevCmd->save();
-  $scandevCmd->event($value);
-
 }
-
-}
-
 
 class scandevCmd extends cmd {
-
 }

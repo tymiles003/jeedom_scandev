@@ -4,16 +4,8 @@ var fs = require('fs'),
     parser = require('xml2json'),
     spawn = require('child_process').spawn,
     path = require('path'),
-
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
-    // print process.argv
-    process.argv.forEach(function(val, index, array) {
-    	switch ( index ) {
-    		case 2 : urlJeedom = val; break;
-        case 3 : name = val; break;
-    	}
-    });
+    urlJeedom =
+    name =
 
 
 /* -------------------------------
@@ -22,7 +14,7 @@ var fs = require('fs'),
 var config = {
   interface: 'wlan0',
   dumpName: 'dump',
-  endpoint: urlJeedom + "&name=" + name,
+  endpoint: urlJeedom,
 };
 
 var requestOptions = {

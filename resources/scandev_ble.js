@@ -1,20 +1,7 @@
 var request = require('request');
-
+var noble = require('noble');
 var urlJeedom = '';
 var name = '';
-
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
-// print process.argv
-process.argv.forEach(function(val, index, array) {
-
-	switch ( index ) {
-		case 2 : urlJeedom = val; break;
-		case 3 : name = val; break;
-	}
-
-});
-var noble = require('noble');
 
 var RSSI_THRESHOLD    = -100;
 var EXIT_GRACE_PERIOD = 30000; // milliseconds
@@ -26,27 +13,24 @@ noble.on('discover', function(peripheral) {
     // ignore
     return;
   }
-
   var id = peripheral.id;
   var entered = !inRange[id];
-
   if (entered) {
     inRange[id] = {
       peripheral: peripheral
     };
-
     console.log('"' + peripheral.advertisement.localName + '" entered (RSSI ' + peripheral.rssi + ') ' + new Date());
-    url = urlJeedom + "&type=btsniffer&name=" + name + "&id=" + peripheral.address;
-
 		request({
-			url: url,
+			url: urlJeedom,
 			method: 'PUT',
 			json: {"device": peripheral.advertisement.localName,
       "rssi": peripheral.rssi,
+			"status": "1",
       "address": peripheral.address,
+			"type": "ble",
+			"scanner": name,
       },
 		},
-
 		function (error, response, body) {
 			  if (!error && response.statusCode == 200) {
 				//console.log( response.statusCode);
@@ -55,7 +39,6 @@ noble.on('discover', function(peripheral) {
 			  }
 			});
   }
-
   inRange[id].lastSeen = Date.now();
 });
 
@@ -66,17 +49,18 @@ setInterval(function() {
 
       console.log('"' + peripheral.advertisement.localName + '" exited (RSSI ' + peripheral.rssi + ') ' + new Date());
       console.log('"' + peripheral.advertisement.localName + '" entered (RSSI ' + peripheral.rssi + ') ' + new Date());
-      url = urlJeedom + "&type=btsniffer&name=" + name + "&id=" + peripheral.address;
 
   		request({
-  			url: url,
+  			url: urlJeedom,
   			method: 'PUT',
   			json: {"device": peripheral.advertisement.localName,
-        "rssi": "off",
+        "rssi": "0",
+				"status": "0",
         "address": peripheral.address,
+				"type": "ble",
+				"scanner": name,
         },
   		},
-
   		function (error, response, body) {
   			  if (!error && response.statusCode == 200) {
   				//console.log( response.statusCode);
@@ -84,7 +68,6 @@ setInterval(function() {
   			  	console.log( error );
   			  }
   			});
-
       delete inRange[id];
     }
   }

@@ -30,15 +30,24 @@ if (!isConnect()) {
     <fieldset>
 
       <div class="form-group">
-        <label class="col-sm-4 control-label">{{Port clef bluetooth}}</label>
+        <label class="col-sm-4 control-label">{{Scanner bluetooth}}</label>
         <div class="col-sm-2">
-          <select class="configKey form-control" data-l1key="port">
+          <select class="configKey form-control" data-l1key="portble">
             <option value="none">{{Aucun}}</option>
             <?php
             foreach (jeedom::getBluetoothMapping() as $name => $value) {
               echo '<option value="' . $name . '">' . $name . ' (' . $value . ')</option>';
             }
             ?>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-4 control-label">{{Scanner wifi}}</label>
+        <div class="col-sm-2">
+          <select class="configKey form-control" data-l1key="portwifi">
+            <option value="none">{{Aucun}}</option>
+              <option value="wlan0">wlan0</option>
           </select>
         </div>
       </div>
