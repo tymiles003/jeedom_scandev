@@ -1,7 +1,7 @@
 var request = require('request');
 var noble = require('noble');
-var urlJeedom = '';
-var name = '';
+var urlJeedom = process.env.URL;
+var name = process.env.NAME;
 
 var RSSI_THRESHOLD    = -100;
 var EXIT_GRACE_PERIOD = 30000; // milliseconds

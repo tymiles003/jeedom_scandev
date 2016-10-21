@@ -4,13 +4,9 @@ var fs = require('fs'),
     parser = require('xml2json'),
     spawn = require('child_process').spawn,
     path = require('path'),
-    urlJeedom =
-    name =
+    urlJeedom =process.env.URL,
+    name =process.env.NAME
 
-
-/* -------------------------------
-    CONFIGURE YOUR SETTINGS
- ------------------------------- */
 var config = {
   interface: 'wlan0',
   dumpName: 'dump',
