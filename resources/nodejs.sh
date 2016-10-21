@@ -18,6 +18,8 @@ fi
 cd ../resources/
 cp scandev* /opt/jeedom_scandev
 sudo chown -R www-data $DIRECTORY
+cd /opt/jeedom_scandev
+
 echo 10 > /tmp/scandev_dep
 actual=`nodejs -v`;
 echo "Version actuelle : ${actual}"
