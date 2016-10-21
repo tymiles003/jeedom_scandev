@@ -22,9 +22,21 @@ class scandev extends eqLogic {
     $return = array();
     //$return['log'] = 'scandev_node';
     $return['state'] = 'nok';
-    $pid = trim( shell_exec ('ps ax | grep "/opt/jeedom_scandev" | grep -v "grep" | wc -l') );
-    if ($pid != '' && $pid != '0') {
-      $return['state'] = 'ok';
+    if (config::byKey('portble', 'scandev',0) != '0') {
+      $pid = trim( shell_exec ('ps ax | grep "/opt/jeedom_scandev/scandev_ble.js" | grep -v "grep" | wc -l') );
+      if ($pid != '' && $pid != '0') {
+        $return['state'] = 'ok';
+      } else {
+        $return['state'] = 'nok';
+      }
+    }
+    if (config::byKey('portwifi', 'scandev',0) != '0') {
+      $pid = trim( shell_exec ('ps ax | grep "/opt/jeedom_scandev/scandev_wifi.js" | grep -v "grep" | wc -l') );
+      if ($pid != '' && $pid != '0') {
+        $return['state'] = 'ok';
+      } else {
+        $return['state'] = 'nok';
+      }
     }
     $return['launchable'] = 'ok';
     return $return;
@@ -39,13 +51,13 @@ class scandev extends eqLogic {
     log::add('scandev', 'info', 'Lancement des démons scandev');
     $url = 'URL=http://127.0.0.1' . config::byKey('internalComplement') . '/plugins/airmon/core/api/jeeScandev.php?apikey=' . jeedom::getApiKey('scandev');
 
-    if (config::byKey('portble', 'scandev',0) != '0') {
+    if (config::byKey('portble', 'scandev') != '') {
       $name = 'NAME=blemaster';
       $port = 'NOBLE_HCI_DEVICE_ID=' . str_replace('hci', '', jeedom::getBluetoothMapping(config::byKey('portble', 'scandev',0)));
       $cmd = $port . ' ' . $url . ' ' . $name . ' ' . 'nodejs /opt/jeedom_scandev/scandev_ble.js';
       scandev::execute_service('ble', $cmd);
     }
-    if (config::byKey('portwifi', 'scandev',0) != '0') {
+    if (config::byKey('portwifi', 'scandev') != '') {
       $name = 'NAME=wifimaster';
       $port = 'WLAN=' . config::byKey('portwifi', 'scandev',0);
       $cmd = $port . ' ' . $url . ' ' . $name . ' ' . 'nodejs /opt/jeedom_scandev/scandev_wifi.js';
@@ -56,7 +68,7 @@ class scandev extends eqLogic {
   public static function execute_service($service, $cmd) {
     log::add('scandev', 'info', 'Lancement service ' . $service);
     log::add('scandev', 'debug', $cmd);
-    $result = exec('sudo ' . $cmd . ' >> ' . log::getPathToLog('scandev_node') . ' 2>&1 &');
+    $result = exec('sudo ' . $cmd . ' >> ' . log::getPathToLog('scandev_' . $service) . ' 2>&1 &');
     if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
       log::add('scandev', 'error', $result);
       return false;
