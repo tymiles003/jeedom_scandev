@@ -76,9 +76,9 @@ sudo npm cache clean
 sudo rm -rf node_modules
 
 echo 75 > /tmp/scandev_dep
-sudo npm install --unsafe-perm noble
+sudo npm install noble
 echo 80 > /tmp/scandev_dep
-sudo npm install --unsafe-perm request
+sudo npm install request
 echo 85 > /tmp/scandev_dep
 sudo npm install xml2json
 echo 90 > /tmp/scandev_dep
