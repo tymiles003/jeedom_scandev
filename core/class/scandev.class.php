@@ -99,8 +99,8 @@ class scandev extends eqLogic {
     $return = array();
     $return['log'] = 'scandev_dep';
     $return['progress_file'] = '/tmp/scandev_dep';
-    $noble = '/opt/jeedom_scandev/node_modules/noble');
-    $request = '/opt/jeedom_scandev/node_modules/request');
+    $noble = '/opt/jeedom_scandev/node_modules/noble';
+    $request = '/opt/jeedom_scandev/node_modules/request';
     $return['progress_file'] = '/tmp/scandev_dep';
     if (is_dir($noble) && is_dir($request)) {
       $return['state'] = 'ok';
