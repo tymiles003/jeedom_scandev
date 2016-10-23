@@ -71,7 +71,7 @@ $scandevCmd->setConfiguration('value', $status);
 $scandevCmd->setConfiguration('reader', $reader);
 $scandevCmd->save();
 $scandevCmd->event($status);
-$scandevCmd = scandevCmd::byEqLogicIdAndLogicalId($scandev->getId(),$reader . 'rssi');s
+$scandevCmd = scandevCmd::byEqLogicIdAndLogicalId($scandev->getId(),$reader . 'rssi');
 if (!is_object($scandevCmd)) {
 	$scandevCmd = new scandevCmd();
 	$scandevCmd->setName($scanner . ' rssi');
