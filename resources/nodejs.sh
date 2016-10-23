@@ -16,7 +16,7 @@ if [ ! -d "$DIRECTORY" ]; then
   sudo mkdir $DIRECTORY
 fi
 cd ../resources/
-cp scandev* /opt/jeedom_scandev
+sudo cp scandev* /opt/jeedom_scandev
 sudo chown -R www-data $DIRECTORY
 cd /opt/jeedom_scandev
 
