@@ -35,7 +35,7 @@ $addr = $body['address'];
 $scanner = $body['scanner'];
 $type = $body['type'];
 $status = $body['status'];
-$scandev = self::byLogicalId($addr, 'scandev');
+$scandev = scandev::byLogicalId($addr, 'scandev');
 if (!is_object($scandev)) {
 	if (config::byKey('include_mode','scandev') != 1) {
 		return false;
