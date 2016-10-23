@@ -5,9 +5,8 @@ var fs = require('fs'),
     spawn = require('child_process').spawn,
     path = require('path'),
     urlJeedom =process.env.URL,
-    name =process.env.NAME;
-
-var config = {
+    name =process.env.NAME,
+    config = {
   interface: 'wlan0',
   dumpName: 'dump',
   endpoint: urlJeedom,
