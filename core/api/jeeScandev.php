@@ -58,7 +58,7 @@ if ($device != $scandev->getConfiguration('device')) {
 	$scandev->setConfiguration('device', $device);
 }
 $scandev->save();
-$scandevCmd = scandevCmd::byEqLogicIdAndLogicalId($scandev->getId(),$reader);s
+$scandevCmd = scandevCmd::byEqLogicIdAndLogicalId($scandev->getId(),$reader);
 if (!is_object($scandevCmd)) {
 	$scandevCmd = new scandevCmd();
 	$scandevCmd->setName($scanner);
