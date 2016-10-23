@@ -51,13 +51,13 @@ class scandev extends eqLogic {
     log::add('scandev', 'info', 'Lancement des démons scandev');
     $url = 'URL=http://127.0.0.1' . config::byKey('internalComplement') . '/plugins/airmon/core/api/jeeScandev.php?apikey=' . jeedom::getApiKey('scandev');
 
-    if (config::byKey('portble', 'scandev') != '') {
+    if (config::byKey('portble', 'scandev', 'none') != 'none') {
       $name = 'NAME=blemaster';
       $port = 'NOBLE_HCI_DEVICE_ID=' . str_replace('hci', '', jeedom::getBluetoothMapping(config::byKey('portble', 'scandev',0)));
       $cmd = $port . ' ' . $url . ' ' . $name . ' ' . 'nodejs /opt/jeedom_scandev/scandev_ble.js';
       scandev::execute_service('ble', $cmd);
     }
-    if (config::byKey('portwifi', 'scandev') != '') {
+    if (config::byKey('portwifi', 'scandev', 'none') != 'none') {
       $name = 'NAME=wifimaster';
       $port = 'WLAN=' . config::byKey('portwifi', 'scandev',0);
       $cmd = $port . ' ' . $url . ' ' . $name . ' ' . 'nodejs /opt/jeedom_scandev/scandev_wifi.js';
