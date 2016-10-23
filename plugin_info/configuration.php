@@ -47,7 +47,7 @@ if (!isConnect()) {
         <div class="col-sm-2">
           <select class="configKey form-control" data-l1key="portwifi">
             <option value="none">{{Aucun}}</option>
-              <option value="wlan0">wlan0</option>
+              <option value="wlan0">{{Actif (wlan0 monopilisé)}}</option>
           </select>
         </div>
       </div>

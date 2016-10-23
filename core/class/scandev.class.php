@@ -58,9 +58,8 @@ class scandev extends eqLogic {
       scandev::execute_service('ble', $cmd);
     }
     if (config::byKey('portwifi', 'scandev', 'none') != 'none') {
-      log::add('scandev', 'debug', config::byKey('portwifi', 'scandev', 'none'));
       $name = 'NAME=wifimaster';
-      $port = 'WLAN=' . config::byKey('portwifi', 'scandev',0);
+      $port = 'WLAN=' . config::byKey('portwifi', 'scandev');
       $cmd = $port . ' ' . $url . ' ' . $name . ' ' . 'nodejs /opt/jeedom_scandev/scandev_wifi.js';
       scandev::execute_service('wifi', $cmd);
     }
