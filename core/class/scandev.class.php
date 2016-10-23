@@ -49,7 +49,7 @@ class scandev extends eqLogic {
       throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
     }
     log::add('scandev', 'info', 'Lancement des démons scandev');
-    $url = 'URL=http://127.0.0.1' . config::byKey('internalComplement') . '/plugins/airmon/core/api/jeeScandev.php?apikey=' . jeedom::getApiKey('scandev');
+    $url = 'URL=http://127.0.0.1' . config::byKey('internalComplement') . '/plugins/scandev/core/api/jeeScandev.php?apikey=' . jeedom::getApiKey('scandev');
 
     if (config::byKey('portble', 'scandev', 'none') != 'none') {
       $name = 'NAME=blemaster';
@@ -58,6 +58,7 @@ class scandev extends eqLogic {
       scandev::execute_service('ble', $cmd);
     }
     if (config::byKey('portwifi', 'scandev', 'none') != 'none') {
+      log::add('scandev', 'debug', config::byKey('portwifi', 'scandev', 'none'));
       $name = 'NAME=wifimaster';
       $port = 'WLAN=' . config::byKey('portwifi', 'scandev',0);
       $cmd = $port . ' ' . $url . ' ' . $name . ' ' . 'nodejs /opt/jeedom_scandev/scandev_wifi.js';
