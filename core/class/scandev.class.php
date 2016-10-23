@@ -22,7 +22,7 @@ class scandev extends eqLogic {
     $return = array();
     //$return['log'] = 'scandev_node';
     $return['state'] = 'nok';
-    if (config::byKey('portble', 'scandev') != '') {
+    if (config::byKey('portble', 'scandev', 'none') != 'none') {
       $pid = trim( shell_exec ('ps ax | grep "/opt/jeedom_scandev/scandev_ble.js" | grep -v "grep" | wc -l') );
       if ($pid != '' && $pid != '0') {
         $return['state'] = 'ok';
@@ -30,7 +30,7 @@ class scandev extends eqLogic {
         $return['state'] = 'nok';
       }
     }
-    if (config::byKey('portwifi', 'scandev') != '') {
+    if (config::byKey('portwifi', 'scandev', 'none') != 'none') {
       $pid = trim( shell_exec ('ps ax | grep "/opt/jeedom_scandev/scandev_wifi.js" | grep -v "grep" | wc -l') );
       if ($pid != '' && $pid != '0') {
         $return['state'] = 'ok';
