@@ -31,7 +31,7 @@ if (!isset($body['device'])) {
 }
 $rssi = $body['rssi'];
 $device = $body['device'];
-$addr = $body['addr'];
+$addr = $body['address'];
 $scanner = $body['scanner'];
 $type = $body['type'];
 $status = $body['status'];

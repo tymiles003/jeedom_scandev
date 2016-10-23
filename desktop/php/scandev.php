@@ -63,7 +63,7 @@ if ($state == 1) {
     </div>
 
 
-    <legend><i class="fa fa-table"></i>  {{Mes équipements BLE}} </legend>
+    <legend><i class="fa fa-table"></i>  {{Mes équipements}} </legend>
     <div class="eqLogicThumbnailContainer">
 
       <?php
