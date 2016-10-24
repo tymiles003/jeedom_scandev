@@ -32,7 +32,7 @@ if (!isset($body['device'])) {
 $rssi = $body['rssi'];
 $device = $body['device'];
 $addr = $body['address'];
-$scanner = $body['scanner'];
+$reader = $body['scanner'];
 $type = $body['type'];
 $status = $body['status'];
 $scandev = scandev::byLogicalId($addr, 'scandev');
