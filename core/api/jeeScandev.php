@@ -32,7 +32,7 @@ if (!isset($body['device'])) {
 $rssi = $body['rssi'];
 $device = $body['device'];
 $addr = $body['address'];
-$reader = $body['scanner'];
+$scanner = $body['scanner'];
 $type = $body['type'];
 $status = $body['status'];
 $scandev = scandev::byLogicalId($addr, 'scandev');
@@ -58,7 +58,7 @@ if ($device != $scandev->getConfiguration('device')) {
 	$scandev->setConfiguration('device', $device);
 }
 $scandev->save();
-$scandevCmd = scandevCmd::byEqLogicIdAndLogicalId($scandev->getId(),$reader);
+$scandevCmd = scandevCmd::byEqLogicIdAndLogicalId($scandev->getId(),$scanner);
 if (!is_object($scandevCmd)) {
 	$scandevCmd = new scandevCmd();
 	$scandevCmd->setName($scanner);
@@ -68,10 +68,10 @@ if (!is_object($scandevCmd)) {
 	$scandevCmd->setSubType('binary');
 }
 $scandevCmd->setConfiguration('value', $status);
-$scandevCmd->setConfiguration('reader', $reader);
+$scandevCmd->setConfiguration('reader', $scanner);
 $scandevCmd->save();
 $scandevCmd->event($status);
-$scandevCmd = scandevCmd::byEqLogicIdAndLogicalId($scandev->getId(),$reader . 'rssi');
+$scandevCmd = scandevCmd::byEqLogicIdAndLogicalId($scandev->getId(),$scanner . 'rssi');
 if (!is_object($scandevCmd)) {
 	$scandevCmd = new scandevCmd();
 	$scandevCmd->setName($scanner . ' rssi');
@@ -106,12 +106,12 @@ array(
 }
 $airmon->setConfiguration('lastCommunication', date('Y-m-d H:i:s'));
 $airmon->save();
-$airmonCmd = airmonCmd::byEqLogicIdAndLogicalId($airmon->getId(),$reader);
+$airmonCmd = airmonCmd::byEqLogicIdAndLogicalId($airmon->getId(),$scanner);
 if (!is_object($airmonCmd)) {
 $airmonCmd = new airmonCmd();
-$airmonCmd->setName($reader);
+$airmonCmd->setName($scanner);
 $airmonCmd->setEqLogic_id($airmon->getId());
-$airmonCmd->setLogicalId($reader);
+$airmonCmd->setLogicalId($scanner);
 $airmonCmd->setType('info');
 $airmonCmd->setSubType('binary');
 $airmonCmd->setConfiguration('returnStateValue',0);
